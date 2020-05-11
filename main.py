@@ -1,7 +1,7 @@
-from keygen import generateKey
+from keygen import makeKeyFiles
 import rsa_algorithm
 import test
 
 if __name__ == '__main__':
     print("RSA")
-    print(generateKey(1024))
+    print(makeKeyFiles("name", 1024))
