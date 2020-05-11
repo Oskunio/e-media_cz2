@@ -23,32 +23,27 @@ def generateKey(keySize):
     print('Calculating d that is mod inverse of e...\n')
     d = number.inverse(e, (p - 1) * (q - 1))
     publicKey = (n, e)
-    privateKey = (n, d)
+    privateKey = (d)
     print('Public key:\n', publicKey, "\n")
     print('Private key:\n', privateKey, "\n")
     return (publicKey, privateKey)
 
 
-def makeKeyFiles(name, keySize):
-    # Creates two files 'x_publickey.txt' and 'x_privatekey.txt'
-    # (where x is the value in name) with the the n, e and d, e integers written in them,
+def makeKeyFiles(keySize):
+    # Creates two files 'publickey.txt' and 'privatekey.txt'
+    # with the the n, e and d integers written in them,
     # delimited by a comma.
-    if os.path.exists('%s_publickey.txt' % (name)) or os.path.exists('%s_privatekey.txt' % (name)):
-        sys.exit('WARNING: The file %s_publickey.txt or %s_privatekey.txt already exists! Use a different name or delete these files and re-run this program.' % (name, name))
+    if os.path.exists('publickey.txt') or os.path.exists('privatekey.txt'):
+        sys.exit('WARNING: The file publickey.txt or privatekey.txt already exists!')
+
     publicKey, privateKey = generateKey(keySize)
     print()
-    print('The public key is a %s and a %s digit number.' %
-          (len(str(publicKey[0])), len(str(publicKey[1]))))
-    print('Writing public key to file %s_publickey.txt...' % (name))
 
-    fo = open('%s_publickey.txt' % (name), 'w')
+    fo = open('publickey.txt', 'w')
     fo.write('%s,%s,%s' % (keySize, publicKey[0], publicKey[1]))
     fo.close()
-    print()
-    print('The private key is a %s and a %s digit number.' %
-          (len(str(publicKey[0])), len(str(publicKey[1]))))
-    print('Writing private key to file %s_privatekey.txt...' % (name))
 
-    fo = open('%s_privatekey.txt' % (name), 'w')
-    fo.write('%s,%s,%s' % (keySize, privateKey[0], privateKey[1]))
+    fo = open('privatekey.txt', 'w')
+    fo.write('%s,%s' % (keySize, privateKey))
     fo.close()
+    print("Successfully created keys!")
