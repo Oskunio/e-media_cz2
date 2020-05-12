@@ -6,7 +6,7 @@
 # e - public key(part 2)
 # returns encrypted message
 def encrypt(m, n, e):
-    print("Encription\n")
+    #print("Encription\n")
     return pow(m, e, n)
 
 

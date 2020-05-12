@@ -3,6 +3,11 @@ import random
 import sys
 import os
 
+def HexStringToPNG(filename, newFile):
+    data = bytes.fromhex(newFile)
+    with open(filename, 'wb') as file:
+        file.write(data)
+    file.close()
 
 def generateKey(keySize):
     # Step 1: Create two prime numbers, p and q. Calculate n = p * q.
@@ -33,8 +38,8 @@ def makeKeyFiles(keySize):
     # Creates two files 'publickey.txt' and 'privatekey.txt'
     # with the the n, e and d integers written in them,
     # delimited by a comma.
-    if os.path.exists('publickey.txt') or os.path.exists('privatekey.txt'):
-        sys.exit('WARNING: The file publickey.txt or privatekey.txt already exists!')
+    #if os.path.exists('publickey.txt') or os.path.exists('privatekey.txt'):
+       # sys.exit('WARNING: The file publickey.txt or privatekey.txt already exists!')
 
     publicKey, privateKey = generateKey(keySize)
     print()
