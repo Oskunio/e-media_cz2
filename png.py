@@ -22,7 +22,7 @@ def encryptPNG(filename1,filename2, n, e, keySize):
         idatHex = hexFile[(posInText+8):(posInText + 8 + realLength)]
         newIDAT = ''
         i = 0
-        while i != realLength:
+        while i < realLength:
             block = idatHex[i:i+4]
             i = i+4
             encryptedBlock = encryptBlock(block,n,e)
