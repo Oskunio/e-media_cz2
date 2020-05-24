@@ -24,13 +24,20 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
         idatHex = hexFile[(posInText+8):(posInText + 8 + realLength)]
         newIDAT = ''
         i = 0
+        print('orginal lenght')
+        print(realLength)
+
         while i < realLength:
-            block = idatHex[i:i+blockSize]
-            i = i+blockSize
+            if (i+blockSize) > realLength:
+                block = idatHex[i:i+(realLength-i)]
+            else:
+                block = idatHex[i:i+blockSize]
+            i = i + blockSize
             encryptedBlock = encryptBlock(block, n, e, blockSize)
             newIDAT += encryptedBlock
         newIdatLength = int(len(newIDAT) / 2)
-        print(newIdatLength)
+        print('encrypted lenght')
+        print(2*newIdatLength)
         newIdatLengthHex = format(newIdatLength, 'x')
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
@@ -43,13 +50,13 @@ def encryptBlock(block, n, e, blockSize):
     blockInt = int(block, 16)
     encryptedBlock = rsa_algorithm.encrypt(blockInt, n, e)
     hexBlock = format(encryptedBlock, 'x')
-    leng = len(hexBlock)  # 256
+    leng = len(hexBlock)
     while len(hexBlock) % blockSize != 0:
         hexBlock = '0' + hexBlock
     return hexBlock
 
 
-def decryptPNG(filename1, filename2, n, d):
+def decryptPNG(filename1, filename2, n, d, blockSize):
     handler = open(filename1, 'rb')
     hexFile = handler.read().hex()
     posInText = hexFile.find("49444154")
@@ -61,13 +68,17 @@ def decryptPNG(filename1, filename2, n, d):
         idatHex = hexFile[(posInText + 8):(posInText + 8 + realLength)]
         newIDAT = ''
         i = 0
+        print('new idat length')
+        print(realLength)
+
         while i < realLength:
-            block = idatHex[i:i + 256]
-            i = i + 256
-            encryptedBlock = decryptBlock(block, n, d)
+            block = idatHex[i:i + blockSize]
+            i = i + blockSize
+            encryptedBlock = decryptBlock(block, n, d, blockSize)
             newIDAT += encryptedBlock
         newIdatLength = int(len(newIDAT) / 2)
-        print(newIdatLength)
+        print('decrypted length')
+        print(2*newIdatLength)
         newIdatLengthHex = format(newIdatLength, 'x')
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
@@ -76,12 +87,11 @@ def decryptPNG(filename1, filename2, n, d):
         HexStringToPNG(filename2, newFile)
 
 
-def decryptBlock(block, n, d):
+def decryptBlock(block, n, d, blockSize):
     blockInt = int(block, 16)
     encryptedBlock = rsa_algorithm.decrypt(blockInt, n, d)
     hexBlock = format(encryptedBlock, 'x')
-    # powinno być tyle ile blockSize w encryptPNG czyli 64
     length = len(hexBlock)
-    if length % 2 != 0:
-        hexBlock = '0' + hexBlock
+    #while len(hexBlock) % blockSize != 0:
+      #  hexBlock = '0' + hexBlock
     return hexBlock

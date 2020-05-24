@@ -1,6 +1,5 @@
 from keygen import makeKeyFiles
 import rsa_algorithm
-import test
 import os
 import png
 import matplotlib.pyplot as plt
@@ -32,11 +31,17 @@ if __name__ == '__main__':
         for line in privatekey:
             currentline = line.split(",")
             d = int(currentline[1])
+    print('key:',n)
+    print('dlugosc klucza',len(str(n)))
+    liczba = 12345123451234512345123451234512345123451111111111111111111111111111111111111111111111111111
+    zaszyfrowana = rsa_algorithm.encrypt(liczba,n,e)
+    odszyfrowana = rsa_algorithm.decrypt(zaszyfrowana,n,d)
 
     blockSize = int((keyLength / 8) - 42)
     png.encryptPNG(filename1, filename2, n, e,  blockSize)
-    png.decryptPNG(filename2, filename3, n, d)
-
+    png.decryptPNG(filename2, filename3, n, d, blockSize)
+    
+    """
     img1 = mpimg.imread(filename1)
     img2 = mpimg.imread(filename2)  # 2 instead of 1
     img3 = mpimg.imread(filename3)  # 3 instead of 1
@@ -52,3 +57,4 @@ if __name__ == '__main__':
     a.set_title("Decrypted image")
     imgplot = plt.imshow(img3)
     plt.show()
+"""
