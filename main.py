@@ -18,9 +18,12 @@ if __name__ == '__main__':
     #filename1 = './images/dog.png'
     #filename2 = './images/encryptedDog.png'
     #filename3 = './images/decryptedDog.png'
-    filename1 = './images/chmura.png'
-    filename2 = './images/encryptedChmura.png'
-    filename3 = './images/decryptedChmura.png'
+    filename1 = './images/japan.png'
+    filename2 = './images/encryptedJapan.png'
+    filename3 = './images/decryptedJapan.png'
+    #filename1 = './images/kosci.png'
+    #filename2 = './images/encryptedKosci.png'
+    #filename3 = './images/decryptedKosci.png'
     # getting n and e from publickey.txt
     with open("publickey.txt", "r") as publickey:
         for line in publickey:
@@ -39,7 +42,8 @@ if __name__ == '__main__':
     zaszyfrowana = rsa_algorithm.encrypt(liczba,n,e)
     odszyfrowana = rsa_algorithm.decrypt(zaszyfrowana,n,d)
 
-    blockSize = int((keyLength / 8) - 42)
+    #blockSize = int((keyLength / 8))
+    blockSize = 256
     png.encryptPNG(filename1, filename2, n, e,  blockSize)
     png.decryptPNG(filename2, filename3, n, d, blockSize)
 

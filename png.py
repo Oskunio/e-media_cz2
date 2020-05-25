@@ -3,6 +3,7 @@ import rsa_algorithm
 import Crypto
 from Crypto.PublicKey import RSA
 from Crypto import Random
+import time
 
 
 def HexStringToPNG(filename, newFile):
@@ -34,7 +35,10 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
                 block = idatHex[i:i+blockSize]
             i = i + blockSize
             #print(i)
+
             encryptedBlock = encryptBlock(block, n, e, blockSize)
+
+
             newIDAT += encryptedBlock
         newIdatLength = int(len(newIDAT) / 2)
         print('encrypted lenght')
@@ -49,7 +53,13 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
 
 def encryptBlock(block, n, e, blockSize):
     blockInt = int(block, 16)
+    dlugosc = len(str(blockInt))
+    if dlugosc > 617:
+        print('Przekroczono:', dlugosc)
+    start = time.time()
     encryptedBlock = rsa_algorithm.encrypt(blockInt, n, e)
+    end = time.time()
+    #print('encrypt time:', str(end - start))
     hexBlock = format(encryptedBlock, 'x')
     leng = len(hexBlock)
     while len(hexBlock) % 512 != 0:
@@ -75,7 +85,7 @@ def decryptPNG(filename1, filename2, n, d, blockSize):
         while i < realLength:
             block = idatHex[i:i + 512]
             i = i + 512
-            encryptedBlock = decryptBlock(block, n, d)
+            encryptedBlock = decryptBlock(block, n, d,blockSize)
             newIDAT += encryptedBlock
         newIdatLength = int(len(newIDAT) / 2)
         print('decrypted length')
@@ -88,11 +98,11 @@ def decryptPNG(filename1, filename2, n, d, blockSize):
         HexStringToPNG(filename2, newFile)
 
 
-def decryptBlock(block, n, d):
+def decryptBlock(block, n, d, blockSize):
     blockInt = int(block, 16)
     encryptedBlock = rsa_algorithm.decrypt(blockInt, n, d)
     hexBlock = format(encryptedBlock, 'x')
     length = len(hexBlock)
-    #while len(hexBlock) % blockSize != 0:
-      #  hexBlock = '0' + hexBlock
+    while len(hexBlock) % blockSize != 0:
+        hexBlock = '0' + hexBlock
     return hexBlock
