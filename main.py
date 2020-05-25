@@ -12,13 +12,15 @@ if __name__ == '__main__':
     if not os.path.exists('publickey.txt') and not os.path.exists('privatekey.txt'):
         makeKeyFiles(keyLength)
 
-    filename1 = './images/square.png'
-    filename2 = './images/encryptedSquare.png'
-    filename3 = './images/decryptedSquare.png'
-    # filename1 = './images/dog.png'
-    # filename2 = './images/encryptedDog.png'
-    # filename3 = './images/decryptedDog.png'
-
+    #filename1 = './images/square.png'
+    #filename2 = './images/encryptedSquare.png'
+    #filename3 = './images/decryptedSquare.png'
+    #filename1 = './images/dog.png'
+    #filename2 = './images/encryptedDog.png'
+    #filename3 = './images/decryptedDog.png'
+    filename1 = './images/chmura.png'
+    filename2 = './images/encryptedChmura.png'
+    filename3 = './images/decryptedChmura.png'
     # getting n and e from publickey.txt
     with open("publickey.txt", "r") as publickey:
         for line in publickey:
@@ -33,14 +35,14 @@ if __name__ == '__main__':
             d = int(currentline[1])
     print('key:',n)
     print('dlugosc klucza',len(str(n)))
-    liczba = 12345123451234512345123451234512345123451111111111111111111111111111111111111111111111111111
+    liczba = 123451234512345123451234512345123451234511111111111111111111111111111111111111111111111111111111111135
     zaszyfrowana = rsa_algorithm.encrypt(liczba,n,e)
     odszyfrowana = rsa_algorithm.decrypt(zaszyfrowana,n,d)
 
     blockSize = int((keyLength / 8) - 42)
     png.encryptPNG(filename1, filename2, n, e,  blockSize)
     png.decryptPNG(filename2, filename3, n, d, blockSize)
-    
+
     """
     img1 = mpimg.imread(filename1)
     img2 = mpimg.imread(filename2)  # 2 instead of 1
