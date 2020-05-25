@@ -1,6 +1,6 @@
-import rsa_algorithm
 import time
-
+from Crypto.Cipher import PKCS1_OAEP
+import binascii
 
 def HexStringToPNG(filename, newFile):
     data = bytes.fromhex(newFile)
@@ -9,7 +9,8 @@ def HexStringToPNG(filename, newFile):
     file.close()
 
 
-def encryptPNG(filename1, filename2, n, e, blockSize):
+def encryptPNG(filename1, filename2, publicKey, blockSize):
+
     handler = open(filename1, 'rb')
     hexFile = handler.read().hex()
     posInText = hexFile.find("49444154")
@@ -32,7 +33,7 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
             i = i + blockSize
             #print(i)
 
-            encryptedBlock = encryptBlock(block, n, e, blockSize)
+            encryptedBlock = encryptBlock(block, publicKey, blockSize)
 
 
             newIDAT += encryptedBlock
@@ -47,23 +48,28 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
         HexStringToPNG(filename2, newFile)
 
 
-def encryptBlock(block, n, e, blockSize):
-    blockInt = int(block, 16)
-    dlugosc = len(str(blockInt))
-    if dlugosc > 617:
-        print('Przekroczono:', dlugosc)
+def encryptBlock(block, publicKey, blockSize):
+    msg = bytes(block, 'ascii')
+    encryptor = PKCS1_OAEP.new(publicKey)
+
+    #blockInt = int(block, 16)
+    #dlugosc = len(str(blockInt))
+    #if dlugosc > 617:
+    #    print('Przekroczono:', dlugosc)
+
     start = time.time()
-    encryptedBlock = rsa_algorithm.encrypt(blockInt, n, e)
+    encryptedBlock = encryptor.encrypt(msg)
     end = time.time()
     #print('encrypt time:', str(end - start))
-    hexBlock = format(encryptedBlock, 'x')
-    leng = len(hexBlock)
+    hexBlock = binascii.hexlify(encryptedBlock)
+    hexBlock = str(hexBlock, 'utf-8')
+    length = len(hexBlock)
     while len(hexBlock) % 512 != 0:
         hexBlock = '0' + hexBlock
     return hexBlock
 
 
-def decryptPNG(filename1, filename2, n, d, blockSize):
+def decryptPNG(filename1, filename2, keyPair, blockSize):
     handler = open(filename1, 'rb')
     hexFile = handler.read().hex()
     posInText = hexFile.find("49444154")
@@ -81,7 +87,7 @@ def decryptPNG(filename1, filename2, n, d, blockSize):
         while i < realLength:
             block = idatHex[i:i + 512]
             i = i + 512
-            decryptedBlock = decryptBlock(block, n, d,blockSize)
+            decryptedBlock = decryptBlock(block,keyPair,blockSize)
             newIDAT += decryptedBlock
         newIdatLength = int(len(newIDAT) / 2)
         print('decrypted length')
@@ -94,11 +100,14 @@ def decryptPNG(filename1, filename2, n, d, blockSize):
         HexStringToPNG(filename2, newFile)
 
 
-def decryptBlock(block, n, d, blockSize):
-    blockInt = int(block, 16)
-    encryptedBlock = rsa_algorithm.decrypt(blockInt, n, d)
-    hexBlock = format(encryptedBlock, 'x')
+def decryptBlock(block, keyPair, blockSize):
+    decryptor = PKCS1_OAEP.new(keyPair)
+
+    blockBytes = str.encode(block)
+    hexBlock = decryptor.decrypt(blockBytes)
+    hexBlock = binascii.hexlify(hexBlock)
+    hexBlock = str(hexBlock, 'utf-8')
     length = len(hexBlock)
-    while len(hexBlock) % blockSize != 0:
-        hexBlock = '0' + hexBlock
+    #while len(hexBlock) % blockSize != 0:
+   #     hexBlock = '0' + hexBlock
     return hexBlock
