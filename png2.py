@@ -26,17 +26,17 @@ def encryptPNG(filename1, filename2, publicKey, blockSize):
         print(realLength)
 
         while i < realLength:
-            if (i+blockSize) > realLength:
-                block = idatHex[i:i+(realLength-i)]
+            # jesli dodanie wielkosci bloku wyszlo by poza zakres
+            if (i + blockSize) > realLength:
+                block = idatHex[i:i + (realLength - i)]
             else:
-                block = idatHex[i:i+blockSize]
+                # jesli nie wychodzi poza zakres
+                block = idatHex[i:i + blockSize]
+
             i = i + blockSize
-            #print(i)
-
             encryptedBlock = encryptBlock(block, publicKey, blockSize)
-
-
             newIDAT += encryptedBlock
+        # powrot do dlugosci bitowej
         newIdatLength = int(len(newIDAT) / 2)
         print('encrypted lenght')
         print(2*newIdatLength)
@@ -49,19 +49,17 @@ def encryptPNG(filename1, filename2, publicKey, blockSize):
 
 
 def encryptBlock(block, publicKey, blockSize):
+    # rzutowanie stringu na bity
     msg = bytes(block, 'ascii')
     encryptor = PKCS1_OAEP.new(publicKey)
-
-    #blockInt = int(block, 16)
-    #dlugosc = len(str(blockInt))
-    #if dlugosc > 617:
-    #    print('Przekroczono:', dlugosc)
 
     start = time.time()
     encryptedBlock = encryptor.encrypt(msg)
     end = time.time()
     #print('encrypt time:', str(end - start))
+    # rzutowanie znakow na hex
     hexBlock = binascii.hexlify(encryptedBlock)
+    # rzutowanie hex bitow na hex stringi
     hexBlock = str(hexBlock, 'utf-8')
     length = len(hexBlock)
     while len(hexBlock) % 512 != 0:

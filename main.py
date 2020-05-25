@@ -18,15 +18,13 @@ if __name__ == '__main__':
     #filename1 = './images/square.png'
     #filename2 = './images/encryptedSquare.png'
     #filename3 = './images/decryptedSquare.png'
-    #filename1 = './images/dog.png'
-    #filename2 = './images/encryptedDog.png'
-    #filename3 = './images/decryptedDog.png'
     filename1 = './images/japan.png'
     filename2 = './images/encryptedJapan.png'
     filename3 = './images/decryptedJapan.png'
     #filename1 = './images/kosci.png'
     #filename2 = './images/encryptedKosci.png'
     #filename3 = './images/decryptedKosci.png'
+
     # getting n and e from publickey.txt
     with open("publickey.txt", "r") as publickey:
         for line in publickey:
@@ -39,17 +37,13 @@ if __name__ == '__main__':
         for line in privatekey:
             currentline = line.split(",")
             d = int(currentline[1])
-    print('key:',n)
-    print('dlugosc klucza',len(str(n)))
 
-    #liczba = 123451234512345123451234512345123451234511111111111111111111111111111111111111111111111111111111111135
-    #zaszyfrowana = rsa_algorithm.encrypt(liczba,n,e)
-    #odszyfrowana = rsa_algorithm.decrypt(zaszyfrowana,n,d)
 
     #blockSize = int((keyLength / 8))
-    #blockSize = 256
-    blockSize = 64
+    #blockSize = 256 # tego uzywac dla zaimplementowanego szyfrowania czyli png.py
+    blockSize = 64 #wielkosc dla szyfrowania z png2.py
 
+    ############ Probne szyfrowanie biblioteka ###############
     keyPair = RSA.construct((n, e, d))
     kluczPubliczny = keyPair.publickey()
 
@@ -63,12 +57,17 @@ if __name__ == '__main__':
     decryptor = PKCS1_OAEP.new(keyPair)
     decrypted = decryptor.decrypt(encrypted)
     print('Decrypted:', decrypted)
+    ##########################################################
 
-
+    # szyfrowanie implementowanym rsa
     #png.encryptPNG(filename1, filename2, n, e,  blockSize)
     #png.decryptPNG(filename2, filename3, n, d, blockSize)
+
+    # szyfrowanie rsa z bilbioteki
     png2.encryptPNG(filename1, filename2, kluczPubliczny,  blockSize)
     png2.decryptPNG(filename2, filename3, keyPair, blockSize)
+
+
     """
     img1 = mpimg.imread(filename1)
     img2 = mpimg.imread(filename2)  # 2 instead of 1
