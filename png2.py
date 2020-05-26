@@ -102,8 +102,9 @@ def decryptBlock(block, keyPair, blockSize):
     decryptor = PKCS1_OAEP.new(keyPair)
 
     blockBytes = str.encode(block)
+    blockBytes = binascii.unhexlify(blockBytes)
     hexBlock = decryptor.decrypt(blockBytes)
-    hexBlock = binascii.hexlify(hexBlock)
+   # hexBlock = binascii.hexlify(hexBlock)
     hexBlock = str(hexBlock, 'utf-8')
     length = len(hexBlock)
     #while len(hexBlock) % blockSize != 0:

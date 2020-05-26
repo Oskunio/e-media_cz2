@@ -15,12 +15,12 @@ if __name__ == '__main__':
     if not os.path.exists('publickey.txt') and not os.path.exists('privatekey.txt'):
         makeKeyFiles(keyLength)
 
-    #filename1 = './images/square.png'
-    #filename2 = './images/encryptedSquare.png'
-    #filename3 = './images/decryptedSquare.png'
+
     filename1 = './images/japan.png'
     filename2 = './images/encryptedJapan.png'
     filename3 = './images/decryptedJapan.png'
+    filename4 = './images/encryptedJapan2.png'
+    filename5 = './images/decryptedJapan2.png'
     #filename1 = './images/kosci.png'
     #filename2 = './images/encryptedKosci.png'
     #filename3 = './images/decryptedKosci.png'
@@ -39,16 +39,14 @@ if __name__ == '__main__':
             d = int(currentline[1])
 
 
-    #blockSize = int((keyLength / 8))
-    #blockSize = 256 # tego uzywac dla zaimplementowanego szyfrowania czyli png.py
-    blockSize = 64 #wielkosc dla szyfrowania z png2.py
+    blockSize = 256 # wielkosc dla zaimplementowanego szyfrowania
+    blockSize2 = 64 #wielkosc dla szyfrowania biblioteka
 
     ############ Probne szyfrowanie biblioteka ###############
+    ##########################################################
     keyPair = RSA.construct((n, e, d))
     kluczPubliczny = keyPair.publickey()
-
-
-    msg = '123'
+    msg = 'daasddsfafasddadsddaadsdasdasdsadasdasdadasdadasdasadsdasdasdasdasdas'
     msg=bytes(msg,'ascii')
     encryptor = PKCS1_OAEP.new(kluczPubliczny)
     encrypted = encryptor.encrypt(msg)
@@ -58,14 +56,15 @@ if __name__ == '__main__':
     decrypted = decryptor.decrypt(encrypted)
     print('Decrypted:', decrypted)
     ##########################################################
+    ##########################################################
 
     # szyfrowanie implementowanym rsa
-    #png.encryptPNG(filename1, filename2, n, e,  blockSize)
-    #png.decryptPNG(filename2, filename3, n, d, blockSize)
+    png.encryptPNG(filename1, filename2, n, e,  blockSize)
+    png.decryptPNG(filename2, filename3, n, d, blockSize)
 
     # szyfrowanie rsa z bilbioteki
-    png2.encryptPNG(filename1, filename2, kluczPubliczny,  blockSize)
-    png2.decryptPNG(filename2, filename3, keyPair, blockSize)
+    png2.encryptPNG(filename1, filename4, kluczPubliczny,  blockSize2)
+    png2.decryptPNG(filename4, filename5, keyPair, blockSize2)
 
 
     """
