@@ -63,8 +63,8 @@ if __name__ == '__main__':
     png.decryptPNG(filename2, filename3, n, d, blockSize)
 
     # szyfrowanie rsa z bilbioteki
-    png2.encryptPNG(filename1, filename4, kluczPubliczny,  blockSize2)
-    png2.decryptPNG(filename4, filename5, keyPair, blockSize2)
+   # png2.encryptPNG(filename1, filename4, kluczPubliczny,  blockSize2)
+#    png2.decryptPNG(filename4, filename5, keyPair, blockSize2)
 
 
     """

@@ -45,9 +45,10 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
         # dlugosc kawalka przechowujacego dlugosc idat musi miec dlugosc rowna 8
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
-        # zawartosc pliku przed IDAT + nowa dlugosc + naglowek 'IDAT + nowe dane + reszta pliku
+        # zawartosc pliku przed IDAT + nowa dlugosc + naglowek IDAT + nowe dane + reszta pliku
         newFile = hexFile[0:(posInText-8)] + newIdatLengthHex + hexFile[posInText:(
-            posInText+8)] + newIDAT + hexFile[(posInText+realLength):]
+            posInText+8)] + newIDAT + hexFile[(posInText + 8 + realLength):]
+
         HexStringToPNG(filename2, newFile)
 
 
@@ -100,7 +101,8 @@ def decryptPNG(filename1, filename2, n, d, blockSize):
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
         newFile = hexFile[0:(posInText - 8)] + newIdatLengthHex + hexFile[posInText:(
-            posInText + 8)] + newIDAT + hexFile[(posInText + realLength):]
+            posInText + 8)] + newIDAT + hexFile[(posInText + 8 + realLength):]
+
         HexStringToPNG(filename2, newFile)
 
 
@@ -110,6 +112,6 @@ def decryptBlock(block, n, d, blockSize):
     hexBlock = format(encryptedBlock, 'x')
     length = len(hexBlock)
     #wyrownanie do pierwotnej dlugosci
-    while len(hexBlock) % blockSize != 0:
+    while len(hexBlock) % 2 != 0:
         hexBlock = '0' + hexBlock
     return hexBlock

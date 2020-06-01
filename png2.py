@@ -44,7 +44,7 @@ def encryptPNG(filename1, filename2, publicKey, blockSize):
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
         newFile = hexFile[0:(posInText-8)] + newIdatLengthHex + hexFile[posInText:(
-            posInText+8)] + newIDAT + hexFile[(posInText+realLength):]
+            posInText+8)] + newIDAT + hexFile[(posInText + 8 + realLength):]
         HexStringToPNG(filename2, newFile)
 
 
@@ -94,7 +94,7 @@ def decryptPNG(filename1, filename2, keyPair, blockSize):
         while len(newIdatLengthHex) % 8 != 0:
             newIdatLengthHex = '0' + newIdatLengthHex
         newFile = hexFile[0:(posInText - 8)] + newIdatLengthHex + hexFile[posInText:(
-            posInText + 8)] + newIDAT + hexFile[(posInText + realLength):]
+            posInText + 8)] + newIDAT + hexFile[(posInText + 8 + realLength):]
         HexStringToPNG(filename2, newFile)
 
 
@@ -107,6 +107,6 @@ def decryptBlock(block, keyPair, blockSize):
    # hexBlock = binascii.hexlify(hexBlock)
     hexBlock = str(hexBlock, 'utf-8')
     length = len(hexBlock)
-    #while len(hexBlock) % blockSize != 0:
-   #     hexBlock = '0' + hexBlock
+    while len(hexBlock) % 2 != 0:
+        hexBlock = '0' + hexBlock
     return hexBlock
