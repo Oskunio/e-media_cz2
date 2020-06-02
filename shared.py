@@ -6,7 +6,9 @@ def HexStringToPNG(filename, newFile):
     file.close()
 
 # tworzy nowy IDAT
-def MakeNewIDAT(hexOldFile,newIdatData,posInText,realLength):
+
+
+def MakeNewIDAT(hexOldFile, newIdatData, posInText, realLength):
 
     newIdatLength = int(len(newIdatData) / 2)
 
@@ -19,8 +21,6 @@ def MakeNewIDAT(hexOldFile,newIdatData,posInText,realLength):
 
     # zawartosc pliku przed IDAT + nowa dlugosc + naglowek IDAT + nowe dane + reszta pliku
     newFile = hexOldFile[0:(posInText - 8)] + newIdatLengthHex + hexOldFile[posInText:(
-            posInText + 8)] + newIdatData + hexOldFile[(posInText + 8 + realLength):]
+        posInText + 8)] + newIdatData + hexOldFile[(posInText + 8 + realLength):]
 
     return newFile
-
-

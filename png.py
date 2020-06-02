@@ -1,8 +1,8 @@
 import rsa_algorithm
 import shared
 
-def encryptPNG(filename1, filename2, n, e, blockSize):
 
+def encryptPNG(filename1, filename2, n, e, blockSize=256):
     handler = open(filename1, 'rb')
     hexFile = handler.read().hex()
 
@@ -35,7 +35,7 @@ def encryptPNG(filename1, filename2, n, e, blockSize):
             newIDAT += encryptedBlock
 
         # sklejanie nowego pliku
-        newFile = shared.MakeNewIDAT(hexFile,newIDAT,posInText,realLength)
+        newFile = shared.MakeNewIDAT(hexFile, newIDAT, posInText, realLength)
         shared.HexStringToPNG(filename2, newFile)
 
 
@@ -88,7 +88,7 @@ def decryptBlock(block, n, d):
     # zamiana na hex string bez '0x' z przodu
     hexBlock = format(encryptedBlock, 'x')
 
-    #wyrownanie dlugosci do parzystej liczby
+    # wyrownanie dlugosci do parzystej liczby
     while len(hexBlock) % 2 != 0:
         hexBlock = '0' + hexBlock
 

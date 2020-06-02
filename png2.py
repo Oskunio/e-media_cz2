@@ -2,6 +2,7 @@ from Crypto.Cipher import PKCS1_OAEP
 import binascii
 import shared
 
+
 def encryptPNG(filename1, filename2, publicKey, blockSize):
 
     handler = open(filename1, 'rb')
@@ -19,7 +20,6 @@ def encryptPNG(filename1, filename2, publicKey, blockSize):
         idatHex = hexFile[(posInText + 8):(posInText + 8 + realLength)]
         newIDAT = ''
         i = 0
-
 
         while i < realLength:
             # jesli dodanie wielkosci bloku wyszlo by poza zakres
