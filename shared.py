@@ -9,7 +9,6 @@ def HexStringToPNG(filename, newFile):
 
 
 def MakeNewIDAT(hexOldFile, newIdatData, posInText, realLength):
-
     newIdatLength = int(len(newIdatData) / 2)
 
     # formatowanie do hex stringa

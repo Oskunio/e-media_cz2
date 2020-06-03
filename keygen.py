@@ -59,11 +59,7 @@ def makeKeyFiles(keySize):
     # Creates two files 'publickey.txt' and 'privatekey.txt'
     # with the the n, e and d integers written in them,
     # delimited by a comma.
-    # if os.path.exists('publickey.txt') or os.path.exists('privatekey.txt'):
-    # sys.exit('WARNING: The file publickey.txt or privatekey.txt already exists!')
-
     publicKey, privateKey = generateKey(keySize)
-    print()
 
     fo = open('publickey.txt', 'w')
     fo.write('%s,%s,%s' % (keySize, publicKey[0], publicKey[1]))
