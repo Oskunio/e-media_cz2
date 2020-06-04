@@ -5,17 +5,16 @@ from decimal import *
 
 
 class CBC():
-    def __init__(self, filename1, filename2, filename3, n, e, d, keySize=1024, blockSize=256):
-        self.filename1 = filename1
-        self.filename2 = filename2
-        self.filename3 = filename3
+    def __init__(self, oryginalFile, encryptedFile, decryptedFile, n, e, d, keySize=1024, blockSize=256):
+        self.oryginalFile = oryginalFile
+        self.encryptedFile = encryptedFile
+        self.decryptedFile = decryptedFile
         self.n = n
         self.e = e
         self.d = d
         self.keySize = keySize
         self.blockSize = blockSize
-        # TODO: Change it to random generated vector blockSize length
-        self.initVector = 39148909606116584139217578911852226208392673723327461817764665387041932301469953656455111581286860433415168217272091210760342718513088835887519717692257045463290303961993457634410738193751786818051267367706820540072424942077293174158076608881311555234075334997743548395808580050646064651757605451868472088201
+        self.initVector = random.getrandbits(blockSize)
         self.prevVector = None
 
     def changeStringToHex(self, str):
@@ -25,19 +24,11 @@ class CBC():
         return a ^ b
 
     def encryptPNG(self):
-        handler = open(self.filename1, 'rb')
+        handler = open(self.oryginalFile, 'rb')
         hexFile = handler.read().hex()
-
-        # find header
-        posInText = hexFile.find("49444154")
-
+        posInText = shared.findPngHeader(hexFile)
         if posInText != -1:
-            # data length (hex)
-            length = hexFile[(posInText - 8):posInText]
-            # data length (dec)
-            chunkLengthDec = int(length, 16)
-            # data length bytes -> chars
-            realLength = 2 * chunkLengthDec
+            realLength = shared.getDataRealLength(hexFile, posInText)
             # get data part from IDAT
             idatHex = hexFile[(posInText+8):(posInText + 8 + realLength)]
             newIDAT = ''
@@ -51,7 +42,7 @@ class CBC():
                     # jesli nie wychodzi poza zakres
                     block = idatHex[i:i+self.blockSize]
 
-                i = i + self.blockSize
+                i += self.blockSize
                 encryptedBlock = self.encryptBlock(block)
                 newIDAT += encryptedBlock
 
@@ -61,7 +52,7 @@ class CBC():
             # sklejanie nowego pliku
             newFile = shared.MakeNewIDAT(
                 hexFile, newIDAT, posInText, realLength)
-            shared.HexStringToPNG(self.filename2, newFile)
+            shared.HexStringToPNG(self.encryptedFile, newFile)
 
     def encryptBlock(self, block):
         # rzutowanie na int
@@ -80,17 +71,11 @@ class CBC():
         return hexBlock
 
     def decryptPNG(self):
-        handler = open(self.filename2, 'rb')
+        handler = open(self.encryptedFile, 'rb')
         hexFile = handler.read().hex()
-        # find header
-        posInText = hexFile.find("49444154")
+        posInText = shared.findPngHeader(hexFile)
         if posInText != -1:
-            # data length (hex)
-            length = hexFile[(posInText - 8):posInText]
-            # data length (dec)
-            chunkLengthDec = int(length, 16)
-            # data length bytes -> chars
-            realLength = 2 * chunkLengthDec
+            realLength = shared.getDataRealLength(hexFile, posInText)
             # get data part from IDAT
             idatHex = hexFile[(posInText + 8):(posInText + 8 + realLength)]
             newIDAT = ''
@@ -99,14 +84,14 @@ class CBC():
             # wczytywanie blokow o wielkosci 512
             while i < realLength:
                 block = idatHex[i:i + 512]
-                i = i + 512
+                i += 512
                 decryptedBlock = self.decryptBlock(block)
                 newIDAT += decryptedBlock
 
             # sklejanie nowego pliku
             newFile = shared.MakeNewIDAT(
                 hexFile, newIDAT, posInText, realLength)
-            shared.HexStringToPNG(self.filename3, newFile)
+            shared.HexStringToPNG(self.decryptedFile, newFile)
 
     def decryptBlock(self, block):
         blockInt = self.changeStringToHex(block)
