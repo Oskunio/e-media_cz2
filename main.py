@@ -24,13 +24,10 @@ if __name__ == '__main__':
     en_CBC_file = './images/encryptedJapanCBC.png'
     de_CBC_file = './images/decryptedJapanCBC.png'
 
-    en_CBC_lib_file = './images/encryptedJapanCBC2.png'
-    de_CBC_lib_file = './images/decryptedJapanCBC2.png'
-
     # LIB CHECK
-    ecb = ECB_LIB(original_file, en_ECB_lib_file, de_ECB_lib_file, n, e, d)
-    ecb.encryptPNG()
-    ecb.decryptPNG()
+    ecb_lib = ECB_LIB(original_file, en_ECB_lib_file, de_ECB_lib_file, n, e, d)
+    ecb_lib.encryptPNG()
+    ecb_lib.decryptPNG()
 
     # CUSTOM ECB CHECK
     ecb = ECB(original_file, en_ECB_file, de_ECB_file, n, e, d)
