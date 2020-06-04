@@ -25,16 +25,19 @@ if __name__ == '__main__':
     de_CBC_file = './images/decryptedJapanCBC.png'
 
     # LIB CHECK
+    print("Lib RSA ECB")
     ecb_lib = ECB_LIB(original_file, en_ECB_lib_file, de_ECB_lib_file, n, e, d)
     ecb_lib.encryptPNG()
     ecb_lib.decryptPNG()
 
     # CUSTOM ECB CHECK
+    print("Custom RSA ECB")
     ecb = ECB(original_file, en_ECB_file, de_ECB_file, n, e, d)
     ecb.encryptPNG()
     ecb.decryptPNG()
 
     # CUSTOM CBC CHECK
+    print("Custom RSA CBC")
     cbc = CBC(original_file, en_CBC_file, de_CBC_file, n, e, d)
     cbc.encryptPNG()
     cbc.decryptPNG()
