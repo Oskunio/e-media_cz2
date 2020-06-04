@@ -23,15 +23,10 @@ class ECB_LIB():
     def encryptPNG(self):
         handler = open(self.oryginalFile, 'rb')
         hexFile = handler.read().hex()
-        posInText = hexFile.find("49444154")
+        posInText = shared.findPngHeader(hexFile)
 
         if posInText != -1:
-            # data length (hex)
-            length = hexFile[(posInText - 8):posInText]
-            # data length (dec)
-            chunkLengthDec = int(length, 16)
-            # data length bytes -> chars
-            realLength = 2 * chunkLengthDec
+            realLength = shared.getDataRealLength(hexFile, posInText)
             # get data part from IDAT
             idatHex = hexFile[(posInText + 8):(posInText + 8 + realLength)]
             newIDAT = ''
@@ -45,7 +40,7 @@ class ECB_LIB():
                     # jesli nie wychodzi poza zakres
                     block = idatHex[i:i + self.blockSize]
 
-                i = i + self.blockSize
+                i += self.blockSize
                 encryptedBlock = self.encryptBlock(block)
                 newIDAT += encryptedBlock
 
@@ -73,15 +68,10 @@ class ECB_LIB():
     def decryptPNG(self):
         handler = open(self.encryptedFile, 'rb')
         hexFile = handler.read().hex()
-        posInText = hexFile.find("49444154")
+        posInText = shared.findPngHeader(hexFile)
 
         if posInText != -1:
-            # data length (hex)
-            length = hexFile[(posInText - 8):posInText]
-            # data length (dec)
-            chunkLengthDec = int(length, 16)
-            # data length bytes -> chars
-            realLength = 2 * chunkLengthDec
+            realLength = shared.getDataRealLength(hexFile, posInText)
             # get data part from IDAT
             idatHex = hexFile[(posInText + 8):(posInText + 8 + realLength)]
             newIDAT = ''
@@ -90,7 +80,7 @@ class ECB_LIB():
             # wczytywanie blokow
             while i < realLength:
                 block = idatHex[i:i + 512]
-                i = i + 512
+                i += 512
                 decryptedBlock = self.decryptBlock(block)
                 newIDAT += decryptedBlock
 

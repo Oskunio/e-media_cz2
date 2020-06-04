@@ -23,3 +23,16 @@ def MakeNewIDAT(hexOldFile, newIdatData, posInText, realLength):
         posInText + 8)] + newIdatData + hexOldFile[(posInText + 8 + realLength):]
 
     return newFile
+
+
+def findPngHeader(hexFile):
+    return hexFile.find("49444154")
+
+
+def getDataRealLength(hexFile, posInText):
+    # data length (hex)
+    length = hexFile[(posInText - 8):posInText]
+    # data length (dec)
+    chunkLengthDec = int(length, 16)
+    # data length bytes -> chars
+    return 2 * chunkLengthDec
